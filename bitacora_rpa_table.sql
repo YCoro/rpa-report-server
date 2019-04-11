@@ -1,3 +1,5 @@
+--Script to generate a default rpa db.
+--Tabla bitacora
 CREATE TABLE bitacora_rpa(
 	BitacoraID INT PRIMARY KEY IDENTITY,
 	Nombre_Proceso VARCHAR(200) NOT NULL,
@@ -10,7 +12,7 @@ CREATE TABLE bitacora_rpa(
 
 ALTER TABLE bitacora_rpa ADD CONSTRAINT CK_Status_Range CHECK (Status >=0 AND Status <=1);
 
-
+--Tabla usuarios
 CREATE TABLE rpa_users(
 	rpaUserID INT IDENTITY(1,1) NOT NULL,
     LoginName NVARCHAR(40) NOT NULL,
@@ -21,11 +23,8 @@ CREATE TABLE rpa_users(
     CONSTRAINT [PK_User_UserID] PRIMARY KEY CLUSTERED (rpaUserID ASC)
 )
 
-SELECT * FROM bitacora_rpa
-
-
 --Begin procedure
-ALTER PROCEDURE dbo.uspRpaAddUser
+CREATE PROCEDURE uspRpaAddUser
     @pLogin NVARCHAR(50), 
     @pPassword NVARCHAR(50),
     @pFirstName NVARCHAR(40) = NULL, 
@@ -53,8 +52,8 @@ END
 
 --End procedure
 
---Execute procedure
- EXEC dbo.uspRpaAddUser N'Admin2', N'Admin2', N'Admin2', N'Admin2'
+--Execute procedure to insert a user
+ EXEC dbo.uspRpaAddUser N'Admin@Admin', N'Admin', N'Admin', N'Admin'
 --End Execute
  --Create login procedure
  CREATE FUNCTION funcRpaLogin(
@@ -76,13 +75,8 @@ END
 select * from rpa_users
 
 --Exec function 
-SELECT dbo.funcRpaLogin(
-	'Admin',
-		 'Admin') AS response
-
+--SELECT dbo.funcRpaLogin(
+--	'Admin@Admin',
+--		 'Admin') AS response
+-- SELECT funcRpaLogin('Admin@Admin','Admin')
 --End exec.
-update bitacora_rpa set Path_Image='Screenshot_20180607-112248.png' where BitacoraID=3
-Ch@p1ncito
-
-select * from rpa_users
-SELECT funcRpaLogin('Admin@Admin','Admin')
