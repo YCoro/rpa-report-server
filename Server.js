@@ -1,20 +1,12 @@
 var express = require('express');
 var bodyParser = require('body-parser')
+const config = require('config');
+var sql = require("mssql");
 var app = express();
 
-var sql = require("mssql");
 
-// config for your database
-var configDB = {
-    user: 'sa',
-    password: 'Bdgsa.2018',
-    server: '10.1.1.83',
-    database: 'rpadb'
-};
-var reportTable = "bitacora_rpa";
-var userTable = "rpa_users";
-var verifyUser = "dbo.funcRpaLogin";
-var insertUser = "uspRpaAddUser";
+const dbConfig = config.get('Report.configDB');
+const dbTables = config.get('Report.configTables');
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -30,16 +22,15 @@ app.get('/', function (req, res) {
 });
 
 app.get('/bitacora', function (req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*')
     // create Request object
-    var request = new sql.ConnectionPool(configDB).connect().then(pool => {
-      return pool.request().query('select * from '+ tableName)
+    var request = new sql.ConnectionPool(dbConfig).connect().then(pool => {
+      return pool.request().query('select * from '+ dbTables.report)
       }).then(result => {
         res.setHeader('Access-Control-Allow-Origin', '*')
         res.status(200).json({data: result.recordset, rows: result.rowsAffected[0]});
         sql.close();
       }).catch(err => {
-        res.status(500).send({ message: "${err}"})
+        res.status(500).send({ message: err})
         sql.close();
       });
 });
@@ -48,8 +39,8 @@ app.post('/login', function (req, res) {
   let email = req.body.email;
   let password = req.body.password;
 
-  var request = new sql.ConnectionPool(configDB).connect().then(pool => {
-    return pool.request().query('SELECT '+ verifyUser + "('"+email+"','"+password+"')")
+  var request = new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    return pool.request().query('SELECT '+ dbTables.verifyUserFunction + "('"+email+"','"+password+"')")
     }).then(result => {
       res.setHeader('Access-Control-Allow-Origin', '*')
       res.status(200).json({data: result.recordset, rows: result.rowsAffected[0]});
@@ -67,8 +58,8 @@ app.post('/signup', function (req, res) {
   let name = req.body.name;
   let lastName = req.body.lastName;
 
-  var request = new sql.ConnectionPool(configDB).connect().then(pool => {
-    return pool.request().query('EXEC '+ insertUser + " "+email+","+password+","+name +","+ lastName)
+  var request = new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    return pool.request().query('EXEC '+ dbTables.addUser + " "+email+","+password+","+name +","+ lastName)
     }).then(result => {
       res.setHeader('Access-Control-Allow-Origin', '*')
       res.status(200).json({data: result.recordset, rows: result.rowsAffected[0]});

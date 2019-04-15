@@ -1,0 +1,18 @@
+//Configure all your initial settings.
+// config for your database
+// config for your Table and function names defined in your DB.
+{
+  "Report":{
+     "configDB" :{
+        "user": "sa",
+        "password": "Bdgsa.2018",
+        "server": "10.1.1.83",
+        "database": "rpadb"
+    },
+    "configTables" : {
+      "report": "bitacora_rpa",
+      "verifyUserFunction": "dbo.funcRpaLogin",
+      "addUser": "uspRpaAddUser"
+    }
+  }
+}
