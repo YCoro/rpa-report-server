@@ -7,6 +7,7 @@ var app = express();
 
 const dbConfig = config.get('Report.configDB');
 const dbTables = config.get('Report.configTables');
+const port = config.get('Port.portNumber');
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -70,6 +71,6 @@ app.post('/signup', function (req, res) {
     });
 });
 
-var server = app.listen(5000, function () {
-    console.log('Server is running.. on port ' + 5000);
+var server = app.listen(port, function () {
+    console.log('Server is running.. on port ' + port);
 });

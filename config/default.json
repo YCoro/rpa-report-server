@@ -1,6 +1,12 @@
-//Configure all your initial settings.
-// config for your database
-// config for your Table and function names defined in your DB.
+/*
+  Configure all your initial settings.
+  configDb = String connection for the sql server.
+  configure for your Table and function names defined in your DB.
+  report = Stored logs of RPA.
+  verifyUserFunction = function To authenticated a user.
+  addUser = Procedure to add a new user with an encrypted password.
+  portNumber = Port to run the application.
+*/
 {
   "Report":{
      "configDB" :{
@@ -14,5 +20,8 @@
       "verifyUserFunction": "dbo.funcRpaLogin",
       "addUser": "uspRpaAddUser"
     }
+  },
+  "Port":{
+    "portNumber": "5000"
   }
 }
