@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser')
-const config = require('config');
+const config = require('./node_modules/config');
 var sql = require("mssql");
 var app = express();
 
@@ -44,7 +44,11 @@ app.post('/login', function (req, res) {
     return pool.request().query('SELECT '+ dbTables.verifyUserFunction + "('"+email+"','"+password+"')")
     }).then(result => {
       res.setHeader('Access-Control-Allow-Origin', '*')
-      res.status(200).json({data: result.recordset, rows: result.rowsAffected[0]});
+      if(result.recordset[0][""] != null){
+        res.status(200).json({data: result.recordset[0][""], rows: result.rowsAffected[0]});
+      }else{
+        res.status(403).json({message: "No pudo logearse en el sistema."})
+      }
       sql.close();
     }).catch(err => {
       console.log(err)
